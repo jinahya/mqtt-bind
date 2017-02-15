@@ -24,40 +24,26 @@ import static java.util.Objects.requireNonNull;
  */
 public abstract class ControlPacket implements Serializable {
 
-    public static enum Type {
+    public enum Type {
+        CONNECT(0x01),
+        CONNACK(0x02),
+        PUBLISH(0x03),
+        PUBACK(0x04),
+        PUBREC(0x05),
+        PUBREL(0x06),
+        PUBCOMP(0x07),
+        SUBSCRIBE(0x08),
+        SUBACK(0x09),
+        UNSUBSCRIBE(0x0A),
+        UNSUBACK(0x0B),
+        PINGREQ(0x0C),
+        PINGRESP(0x0D),
+        DISCONNECT(0x0E);
 
-        CONNECT(1),
-
-        CONNACK(2),
-
-        PUBLISH(3),
-
-        PUBACK(4),
-
-        PUBREC(5),
-
-        PUBREL(6),
-
-        PUBCOMP(7),
-
-        SUBSCRIBE(8),
-
-        SUBACK(9),
-
-        UNSUBSCRIBE(10),
-
-        UNSUBACK(11),
-
-        PINGREQ(12),
-
-        PINGRESP(13),
-
-        DISCONNECT(14);
-        
         // ---------------------------------------------------------------------
         public static Type valueOf(final int numericValue) {
-            for (final Type value : values()) {
-                if (value.numericValue == numericValue)  {
+            for (final Type value : ControlPacket.Type.values()) {
+                if (value.numericValue == numericValue) {
                     return value;
                 }
             }
@@ -66,7 +52,6 @@ public abstract class ControlPacket implements Serializable {
         }
 
         // ---------------------------------------------------------------------
-
         private Type(final int numericValue) {
             this.numericValue = numericValue;
         }
