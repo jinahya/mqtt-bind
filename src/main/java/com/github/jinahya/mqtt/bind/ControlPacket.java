@@ -16,15 +16,11 @@
 package com.github.jinahya.mqtt.bind;
 
 import java.io.Serializable;
-import static java.util.Objects.requireNonNull;
 
-/**
- *
- * @author Jin Kwon &gt;onacit@gmail.com&lt;
- */
 public abstract class ControlPacket implements Serializable {
 
-    public enum Type {
+    public enum Spec {
+        _RESERVED0(0x00),
         CONNECT(0x01),
         CONNACK(0x02),
         PUBLISH(0x03),
@@ -38,44 +34,62 @@ public abstract class ControlPacket implements Serializable {
         UNSUBACK(0x0B),
         PINGREQ(0x0C),
         PINGRESP(0x0D),
-        DISCONNECT(0x0E);
+        DISCONNECT(0x0E),
+        _RESERVEDF(0x0F);
 
         // ---------------------------------------------------------------------
-        public static Type valueOf(final int numericValue) {
-            for (final Type value : ControlPacket.Type.values()) {
-                if (value.numericValue == numericValue) {
+        public static Spec valueOf(final int type) {
+            for (final Spec value : values()) {
+                if (value.type == type) {
                     return value;
                 }
             }
-            throw new IllegalArgumentException(
-                "no constant mapped to " + numericValue);
+            throw new IllegalArgumentException("no constant mapped to " + type);
         }
 
         // ---------------------------------------------------------------------
-        private Type(final int numericValue) {
-            this.numericValue = numericValue;
+        private Spec(final int type) {
+            this.type = type;
         }
 
-        // -------------------------------------------------------- numericValue
-        public int getNumericValue() {
-            return numericValue;
+        // ---------------------------------------------------------------- type
+        public int getType() {
+            return type;
         }
 
         // ---------------------------------------------------------------------
-        private final int numericValue;
+        private final int type;
     }
 
     // -------------------------------------------------------------------------
-    public ControlPacket(final Type type) {
+    public ControlPacket(final Spec spec) {
         super();
-        this.type = requireNonNull(type);
+        if (spec == null) {
+            throw new NullPointerException("null spec");
+        }
+        this.spec = spec;
     }
 
-    // -------------------------------------------------------------------- type
-    public Type getType() {
-        return type;
+    // -------------------------------------------------------------------- spec
+    public Spec getSpec() {
+        return spec;
+    }
+
+    public int getType() {
+        return spec.getType();
     }
 
     // -------------------------------------------------------------------------
-    private final Type type;
+    protected int getFlag() {
+        return flag;
+    }
+
+    protected void setFlag(final int flag) {
+        this.flag = flag;
+    }
+
+    // -------------------------------------------------------------------------
+    protected final Spec spec;
+
+    private int flag;
 }
